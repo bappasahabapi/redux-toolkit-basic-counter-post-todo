@@ -2,40 +2,41 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState={
+    todos:[],
     isLoading:false,
-    posts:[],
     error:null
 }
 
-export const fetchPosts=createAsyncThunk("posts/fetchPosts", async()=>{
+
+export const fetchTodos=createAsyncThunk("todos/fetchTodos", async()=>{
 
     // const url = "https://jsonplaceholder.typicode.com/posts";
-    const url = "https://jsonplaceholder.typicode.com/posts?_limit=3";
+    const url = "https://jsonplaceholder.typicode.com/todos?_limit=4";
     
     const response =await axios.get(url);
     return response.data;
 });
 
-const postSlice =createSlice({
-    name:"posts",
+const todoSlice =createSlice({
+    name:"todos",
     initialState:initialState,
-    extraReducers:(builder)=>{
+    
+    extraReducer:(builder)=>{
         builder
-        .addCase(fetchPosts.pending,(state)=>{
+        .addCase(fetchTodos.pending,(state)=>{
             state.isLoading=true
         });
-       builder.addCase(fetchPosts.fulfilled,(state,action)=>{
+       builder.addCase(fetchTodos.fulfilled,(state,action)=>{
             state.isLoading=false;
-            state.posts=action.payload;
+            state.todos=action.payload;
             state.error=null;
         });
-        builder.addCase(fetchPosts.rejected,(state, action)=>{
+        builder.addCase(fetchTodos.rejected,(state, action)=>{
             state.isLoading=false;
-            state.posts=[];
+            state.todos=[];
             state.error=action.error.message;
         })
-
     }
-});
-
-export default postSlice.reducer;
+    
+})
+export default todoSlice.reducer;
